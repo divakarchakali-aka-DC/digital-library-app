@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}My Borrowed Books - Digital Library{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">My Borrowed Books</h1>
+            
+            {% if borrowed and borrowed.borrowed_books %}
+                <p class="lead mb-4">You have {{ borrowed.borrowed_books|length }} borrowed book(s).</p>
+                <div class="row">
+                    {% for book in borrowed.borrowed_books %}
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card book-card h-100 shadow-sm" style="min-width: 280px; border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                                {% if book.image_url %}
+                                    <img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }} cover" style="height: 300px; object-fit: contain; padding: 10px; border-radius: 10px 10px 0 0;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px; border-radius: 10px 10px 0 0;">
+                                        <i class="fas fa-book fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body d-flex flex-column p-3">
+                                    <h5 class="card-title">{{ book.title }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">by {{ book.author }}</h6>
+                                    {% if book.author_bio %}
+                                        <p class="card-text small">{{ book.author_bio[:100] }}...</p>
+                                    {% endif %}
+                                    
+                                    <!-- Borrow Date in single outline container -->
+                                    <div class="mb-3">
+                                        <div class="card border-info">
+                                            <div class="card-body py-2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold text-info">Borrowed Date:</span>
+                                                    <span class="text-dark">{{ book.borrow_date[:10] }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Buttons in three columns -->
+                                    <div class="mt-auto">
+                                        <div class="d-flex">
+                                            <div class="w-33 pe-1">
+                                                {% if book.book_url %}
+                                                    <a href="{{ book.book_url }}" class="btn btn-primary btn-sm w-100" target="_blank">Read Online</a>
+                                                {% else %}
+                                                    <button class="btn btn-outline-secondary btn-sm w-100" disabled>Read Online</button>
+                                                {% endif %}
+                                            </div>
+                                            <div class="w-33 px-1">
+                                                {% if book.book_url %}
+                                                    <a href="{{ url_for('book_details', book_id=book.book_id) }}" class="btn btn-outline-info btn-sm w-100">Preview</a>
+                                                {% else %}
+                                                    <button class="btn btn-secondary btn-sm w-100" disabled>Preview</button>
+                                                {% endif %}
+                                            </div>
+                                            <div class="w-33 ps-1">
+                                                <form method="POST" action="{{ url_for('return_book', borrow_id=book.id) }}" onclick="event.stopPropagation();" class="w-100">
+                                                    <button type="submit" class="btn btn-outline-warning btn-sm w-100" onclick="return confirm('Are you sure you want to return {{ book.title }}?');">Return</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center col-lg-6 mx-auto">
+                    <h4>No borrowed books yet.</h4>
+                    <p>Start browsing and borrow some books to see them here.</p>
+                    <a href="{{ url_for('books') }}" class="btn btn-primary">Browse Books</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .book-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .book-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+    .w-33 {
+        width: 33.333% !important;
+    }
+</style>
+{% endblock %}

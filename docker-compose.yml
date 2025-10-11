@@ -1,0 +1,66 @@
+services:
+  main-app:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      book-service:
+        condition: service_started
+      borrow-service:
+        condition: service_started
+    volumes:
+      - ./templates:/app/templates
+
+  auth-service:
+    build: ./auth
+    ports:
+      - "5002:5002"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy  # Ensures DB ready before auth starts
+
+  book-service:
+    build: ./book
+    ports:
+      - "5001:5001"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  borrow-service:
+    build: ./borrow
+    ports:
+      - "5003:5003"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ./database
+    ports:
+      - "3306:3306"
+    env_file: .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=app_user
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app_user", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s  # Increased: Allows full init (entrypoint + init.sh + SQL) before healthcheck
+
+volumes:
+  db_data:

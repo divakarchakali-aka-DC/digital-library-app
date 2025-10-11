@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Manage Users</h1>
+    <a href="{{ url_for('admin') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Create New User</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password (min 6 characters)</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="user">User </option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

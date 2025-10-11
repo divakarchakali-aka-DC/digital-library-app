@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Add Book - Digital Library{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Add New Book</h2>
+        <p class="text-muted">Fill in the details below. Required fields are marked with *.</p>
+        <form method="POST" action="{{ url_for('add_book_page') }}">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="title" name="title" required placeholder="e.g., 1984" maxlength="200">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="author" class="form-label">Author <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="author" name="author" required placeholder="e.g., George Orwell" maxlength="100">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="author_bio" class="form-label">Author Bio (optional)</label>
+                <textarea class="form-control" id="author_bio" name="author_bio" rows="3" placeholder="Brief biography or description of the author..."></textarea>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="image_url" class="form-label">Image URL (optional)</label>
+                    <input type="url" class="form-control" id="image_url" name="image_url" placeholder="https://example.com/book-cover.jpg" maxlength="500">
+                    <div class="form-text">URL to a book cover image.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="book_url" class="form-label">Book URL <span class="text-danger">*</span></label>
+                    <input type="url" class="form-control" id="book_url" name="book_url" required placeholder="https://www.gutenberg.org/files/30/30-h/30-h.htm" maxlength="500">
+                    <div class="form-text">URL to the full book content (PDF, online reader, etc.).</div>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('admin') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
