@@ -235,32 +235,43 @@ docker-compose up -d
 
 ```
 digital-library/
-├── app.py                   # Main Flask application (Gateway)
+├── Dockerfile               # Multi-stage build for main application
+├── docker-compose.yml       # Multi-service orchestration
+├── app.py                   # Main Flask application (Web Gateway)
+├── requirements.txt         # Python dependencies for main app
+├── .env                     # Environment variables (create this file)
+|
 ├── auth/                    # Authentication microservice
 │   ├── auth_service.py      # JWT & user management
 │   ├── Dockerfile           # Container configuration
 │   └── requirements.txt     # Python dependencies
+|
 ├── book/                    # Book management microservice  
 │   ├── book_service.py      # Book CRUD operations
 │   ├── Dockerfile           # Container configuration
 │   └── requirements.txt     # Python dependencies
+|
 ├── borrow/                  # Borrowing microservice
 │   ├── borrow_service.py    # Borrow/return logic
 │   ├── Dockerfile           # Container configuration
 │   └── requirements.txt     # Python dependencies
+|
 ├── database/                # MySQL database setup
 │   ├── database.sql         # Schema & initial data
 │   ├── init.sh              # Database initialization
 │   ├── my.cnf               # MySQL configuration
 │   └── Dockerfile           # Database container
-├── templates/               # HTML templates
-│   ├── base.html            # Main template
-│   ├── books.html           # Book listing
-│   ├── borrow.html          # Borrowed books
-│   └── admin.html           # Admin dashboard
-└── docker-compose.yml       # Multi-service orchestration
+|
+└── templates/               # HTML templates
+    ├── base.html            # Base template with navigation
+    ├── signin.html          # User login page
+    ├── signup.html          # User registration page
+    ├── books.html           # Book listing with search
+    ├── book_details.html    # Individual book details page
+    ├── borrow.html          # User's borrowed books page
+    ├── admin.html           # Admin dashboard
+    ├── admin-users.html     # User management page
+    ├── add-book.html        # Add new book form
+    └── edit-book.html       # Edit existing book form
 ```
-
 ---
-
-**Happy Reading! 📖** - Your digital library is now running with a robust microservices architecture, pre-loaded with valuable technical documentation and classic literature.
