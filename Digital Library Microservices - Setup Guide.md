@@ -147,8 +147,8 @@ docker-compose exec app curl -s http://auth-service:5002/health
 
 ### Connect to Database
 ```bash
-# Connect to MySQL database
-docker-compose exec db mysql -u <DB_USER from .env> -psecretpassword <DB_PASSWORD from .env file>
+# Connect to MySQL database (change the app_user, secretpassword, digital_library if you changed in .env file)
+docker-compose exec db mysql -u app_user -psecretpassword digital_library 
 
 # Once connected, run these SQL commands:
 ```
@@ -227,8 +227,8 @@ docker-compose logs db
 # Wait for database to initialize (can take 30-60 seconds on first run)
 sleep 30
 
-# Test database connection manually
-docker-compose exec db mysql -u <DB_USER from .env> -psecretpassword <DB_PASSWORD from .env file> -e "SHOW TABLES;"
+# Test database connection manually (change the app_user, secretpassword, digital_library if you changed in .env file)
+docker-compose exec db mysql -u app_user -psecretpassword digital_library -e "SHOW TABLES;"
 ```
 
 ### Issue 3: Port Already in Use
@@ -288,11 +288,11 @@ docker-compose exec app ping -c 1 book-service
 
 ### Database Validation
 ```bash
-# Database should be accessible
-docker-compose exec db mysql -u <DB_USER from .env> -psecretpassword <DB_PASSWORD from .env file> -e "SHOW DATABASES;"
+# Database should be accessible (change the app_user, secretpassword, digital_library if you changed in .env file)
+docker-compose exec db mysql -u app_user -psecretpassword digital_library -e "SHOW DATABASES;"
 
-# Should have initial data
-docker-compose exec db mysql -u <DB_USER from .env> -psecretpassword <DB_PASSWORD from .env file> -e "SELECT COUNT(*) as book_count FROM books;"
+# Should have initial data (change the app_user, secretpassword, digital_library if you changed in .env file)
+docker-compose exec db mysql -u app_user -psecretpassword digital_library -e "SELECT COUNT(*) as book_count FROM books;"
 ```
 
 ### Application Validation
@@ -341,10 +341,10 @@ docker-compose down --rmi all
 
 ### Backup Database
 ```bash
-# Create database backup
+# Create database backup (change the app_user, secretpassword, digital_library if you changed in .env file)
 docker-compose exec db mysqldump -u app_user -psecretpassword digital_library > backup.sql
 
-# Restore from backup
+# Restore from backup (change the app_user, secretpassword, digital_library if you changed in .env file)
 docker-compose exec -T db mysql -u app_user -psecretpassword digital_library < backup.sql
 ```
 
