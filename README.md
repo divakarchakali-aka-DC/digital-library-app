@@ -216,8 +216,8 @@ docker-compose logs database
 # Restart database service
 docker-compose restart database
 
-# Check database connectivity
-docker-compose exec database mysql -u app_user -p
+# Check database connectivity (change app_user, secretpassword)
+docker-compose exec db mysql -u app_user -psecretpassword digital_library
 ```
 
 **Full System Reset:**
