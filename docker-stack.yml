@@ -1,0 +1,94 @@
+services:
+  # 1. Main Gateway/App
+  main-app:
+    image: divakarchakali1/digital-library-microservices:app
+    ports:
+      - "5000:5000"
+    env_file: .env
+    networks:
+      - api_gateway_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+  # 2. Authentication Service
+  auth-service:
+    image: divakarchakali1/digital-library-microservices:auth
+    ports:
+      - "5002:5002"
+    env_file: .env
+    networks:
+      - api_gateway_net
+      - secure_db_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # 3. Book Management Service
+  book-service:
+    image: divakarchakali1/digital-library-microservices:book
+    ports:
+      - "5001:5001"
+    env_file: .env
+    networks:
+      - api_gateway_net
+      - secure_db_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # 4. Borrowing Service
+  borrow-service:
+    image: divakarchakali1/digital-library-microservices:borrow
+    ports:
+      - "5003:5003"
+    env_file: .env
+    networks:
+      - api_gateway_net
+      - secure_db_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # 5. Database Service (MariaDB)
+  db:
+    image: divakarchakali1/digital-library-microservices:db
+    ports:
+      - "3306:3306"
+    env_file: .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - secure_db_net
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${DB_USER} -p${DB_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  db_data:
+
+networks:
+  api_gateway_net:
+    driver: overlay
+  secure_db_net:
+    driver: overlay
