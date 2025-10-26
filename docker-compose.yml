@@ -4,6 +4,8 @@ services:
     ports:
       - "5000:5000"
     env_file: .env
+    networks:
+      - app-gateway
     depends_on:
       db:
         condition: service_healthy
@@ -21,15 +23,21 @@ services:
     ports:
       - "5002:5002"
     env_file: .env
+    networks:
+      - app-gateway
+      - db-gateway
     depends_on:
       db:
-        condition: service_healthy  # Ensures DB ready before auth starts
+        condition: service_healthy
 
   book-service:
     build: ./book
     ports:
       - "5001:5001"
     env_file: .env
+    networks:
+      - app-gateway
+      - db-gateway
     depends_on:
       db:
         condition: service_healthy
@@ -39,6 +47,9 @@ services:
     ports:
       - "5003:5003"
     env_file: .env
+    networks:
+      - app-gateway
+      - db-gateway
     depends_on:
       db:
         condition: service_healthy
@@ -55,6 +66,8 @@ services:
       - MARIADB_PASSWORD=${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - db-gateway
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app_user", "-p${DB_PASSWORD}"]
       interval: 10s
@@ -64,3 +77,8 @@ services:
 
 volumes:
   db_data:
+networks:
+  app-gateway:
+    driver: bridge
+  db-gateway:
+    driver: bridge
